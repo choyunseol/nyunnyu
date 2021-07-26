@@ -1,0 +1,24 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main() {
+	int array[6], i, p, q, temp;
+	for (i = 0; i <= 5; i++) {
+		printf("%d %s", i, "번째 요소를 입력하세요");
+		scanf("%d", &array[i]);
+	}
+	for (p = 1; p <= 6;p++) {
+		for (q = 0; q <= 4; q++) {
+			if (array[q] > array[q + 1]) {
+				temp = array[q];
+				array[q] = array[q + 1];
+				array[q + 1] = temp;
+			}
+		}
+	}
+	for (i = 0; i <= 5; i++) {
+		printf("%d", array[i]);
+	}
+
+	return 0;
+}
