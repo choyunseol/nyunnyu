@@ -1,0 +1,17 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+
+int main() {
+HOME :
+	printf("%s", "양의 정수를 입력하세요 :");
+	int num, remainder;
+	scanf("%d", &num);
+	remainder = num % 2;
+	if ((remainder == 0) && (num != 0)) printf("%s", "짝수입니다.");
+	else if (remainder == 1) printf("%s", "홀수입니다.");
+	else goto HOME;
+
+	return 0;
+}
+
+// 질문 : 유리수 처리
