@@ -1,0 +1,187 @@
+// ADD함수는 구현은했는데 오류가나서 수정해야합니다
+// 저장기능을 아직 못했습니다
+
+#define _CRT_SECURE_NO_WARNINGS
+#pragma warning(disable:4996)
+#include <stdio.h>
+#include <string.h>
+
+struct book_info {
+	char title[30];
+	char author[21];
+	int year;
+	char publisher[21];
+	char genre[11];
+};
+
+struct book_info ADD(struct book_info* book, int j);
+void SEARCH(struct book_info* book, int j);
+struct book_info MODIFY(struct book_info* book, int j);
+void BOOK_LIST(struct book_info *book, int j);
+struct book_info REMOVE(struct book_info* book, int j);
+
+int main() {
+	printf("도서관리 프로그램을 시작합니다. \n \n");
+	struct book_info book[10];
+	FILE *file;
+	file = fopen("input.txt", "rt");
+
+	int j = 0;
+	for (int i = 0; i < sizeof(book)/ sizeof(struct book_info); i++, j++) {
+		int temp = fscanf(file, "%s %s %d %s %s", book[i].title, book[i].author, &(book[i].year), book[i].publisher, book[i].genre);
+		if (temp == -1) {
+			break;
+		}
+	}
+
+	int out, choose;
+	do {
+		do {
+			printf("원하시는 기능을 선택해주세요\n1.도서 추가 2.도서 검색 3.도서 정보 수정 4.도서 삭제 5.도서 목록 출력 6.저장 : ");
+			scanf("%d", &choose);
+			if (choose == 1) {
+				printf("\n");
+				*book = ADD(&book, j);
+				j++;
+				BOOK_LIST(&book, j);
+				printf("\n");
+			}
+			else if (choose == 2) {
+				printf("\n");
+				SEARCH(&book, j);
+				printf("\n");
+			}
+			else if (choose == 3) {
+				printf("\n");
+				*book = MODIFY(&book, j);
+				BOOK_LIST(&book, j);
+				printf("\n");
+			}
+			else if (choose == 4) {
+				printf("\n");
+				*book = REMOVE(&book, j);
+				j--;
+				BOOK_LIST(&book, j);
+				printf("\n");
+			}
+			else if (choose == 5) {
+				printf("\n");
+				BOOK_LIST(&book, j);
+				printf("\n");
+			}
+			else if (choose == 6) {
+
+			}
+		}while((choose!=1)&& (choose!= 2)&& (choose!= 3)&& (choose!= 4)&& (choose!= 5)&& (choose!= 6));
+
+		do {
+			printf("프로그램을 종료하시겠습니까? 1.예 2.아니오 : ");
+			scanf("%d", &out);
+			printf("\n");
+		} while ((out != 1) && (out != 2));
+	} while (out == 2);
+
+	fclose(file);
+}
+
+struct book_info ADD(struct book_info* book, int j) {
+	char add_title[30], add_author[21], add_publisher[21], add_genre[11];
+	int add_year;
+	printf("추가할 도서의 제목을 입력해주세요 : ");
+	scanf("%s \n", &add_title); strcpy(book[j].title, add_title);
+	printf("추가할 도서의 저자를 입력해주세요 : ");
+	scanf("%s \n", add_author); strcpy(book[j].author, add_author);
+	printf("추가할 도서의 출판 연도를 입력해주세요 : ");
+	scanf("%d \n", &add_year); book[j].year = add_year;
+	printf("추가할 도서의 출판사를 입력해주세요 : ");
+	scanf("%s \n", add_publisher); strcpy(book[j].publisher, add_publisher);
+	printf("추가할 도서의 장르를 입력해주세요 : ");
+	scanf("%s \n", add_genre); strcpy(book[j].genre, add_genre);
+}
+
+void SEARCH(struct book_info* book, int j) {
+	int category, search_year; char search_word[30], type;
+	printf("검색 유형을 선택하세요 1.도서명 2.저자 3.출판 연도 4.출판사 5.장르 : ");
+	scanf("%d", &category);
+	printf("검색어를 입력하세요 (띄어쓰기는 하지마세요.) : ");
+	if (category == 3) scanf("%d", &search_year);
+	else scanf("%s", search_word);
+
+	for (int i = 0; i < j; i++) {
+		if ((category == 1) && (strcmp(search_word, book[i].title)==0)){
+			printf("%s %s %d %s %s \n", book[i].title, book[i].author, book[i].year, book[i].publisher, book[i].genre);
+		}
+		else if ((category == 2) && (strcmp(search_word, book[i].author) == 0)) {
+			printf("%s %s %d %s %s \n", book[i].title, book[i].author, book[i].year, book[i].publisher, book[i].genre);
+		}
+		else if ((category == 3) && (search_year == book[i].year)) {
+			printf("%s %s %d %s %s \n", book[i].title, book[i].author, book[i].year, book[i].publisher, book[i].genre);
+		}
+		else if ((category == 4) && (strcmp(search_word, book[i].publisher) == 0)) {
+			printf("%s %s %d %s %s \n", book[i].title, book[i].author, book[i].year, book[i].publisher, book[i].genre);
+		}
+		else if ((category == 5) && (strcmp(search_word, book[i].genre) == 0)) {
+			printf("%s %s %d %s %s \n", book[i].title, book[i].author, book[i].year, book[i].publisher, book[i].genre);
+		}
+	}
+}
+//예외입력에 대한 처리는 못했습니다ㅠㅠ - 검색유형 또는 검색어 입력 오류 넣고싶었습니다
+
+
+struct book_info MODIFY(struct book_info* book, int j) {
+	int category, edit_year; char edit_title[30], edit_word[30], type;
+	printf("삭제할 도서명을 입력해주세요 (띄어쓰기는 하지마세요.) : ");
+	scanf("%s", &edit_title);
+	printf("수정할 정보를 선택하세요 1.도서명 2.저자 3.출판 연도 4.출판사 5.장르 : ");
+	scanf("%d", &category);
+	printf("수정어를 입력하세요 (띄어쓰기는 하지마세요.) : ");
+	if (category == 3) scanf("%d", &edit_year);
+	else scanf("%s", edit_word);
+	for (int i = 0; i < j; i++) {
+		if (strcmp(edit_title, book[i].title) == 0) {
+			switch (category) {
+			case 1:
+				strcpy(book[i].title, edit_word);
+				break;
+			case 2:
+				strcpy(book[i].author, edit_word);
+				break;
+			case 3:
+				book[i].year = edit_year;
+				break;
+			case 4:
+				strcpy(book[i].publisher, edit_word);
+				break;
+			case 5:
+				strcpy(book[i].genre, edit_word);
+				break;
+			}
+			break;
+		}
+	}
+}
+
+struct book_info REMOVE(struct book_info* book, int j) {
+	char input_title[30];
+	printf("삭제할 도서명을 입력해주세요 (띄어쓰기는 하지마세요.) : ");
+	scanf("%s",&input_title);
+	for (int i = 0; i < j; i++) {
+		if (strcmp(input_title, book[i].title) == 0) {
+			for (i; i < j; i++) {
+				strcpy(book[i].title, book[i + 1].title);
+				strcpy(book[i].author, book[i + 1].author);
+				book[i].year = book[i + 1].year;
+				strcpy(book[i].publisher, book[i + 1].publisher);
+				strcpy(book[i].genre, book[i + 1].genre);
+			}
+			break;
+		}
+	}
+	return *book;
+} //book[i]=book[i+1]로 복사할수는 없나요?
+
+void BOOK_LIST(struct book_info* book, int j) {
+	for (int i = 0; i < j; i++) {
+		printf("%s %s %d %s %s \n", book[i].title, book[i].author, book[i].year, book[i].publisher, book[i].genre);
+	}
+}
